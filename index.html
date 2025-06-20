@@ -1,96 +1,70 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
   <meta charset="UTF-8">
   <title>Гардероб</title>
   <style>
     body {
-      background-color: #ffffff;
-      font-family: "Segoe UI", sans-serif;
-      max-width: 420px;
-      margin: 40px auto;
+      font-family: sans-serif;
+      max-width: 500px;
+      margin: auto;
       padding: 20px;
-      color: #333;
     }
-
-    h2 {
-      text-align: center;
-      font-weight: 500;
-      margin-bottom: 24px;
-    }
-
-    input,
-    button {
+    input, textarea, button {
       width: 100%;
-      padding: 10px 14px;
-      margin-bottom: 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      margin-top: 10px;
+      padding: 10px;
       font-size: 16px;
-      background-color: #f9f9f9;
     }
-
-    input:focus {
-      outline: none;
-      border-color: #4CAF50;
-      background-color: #fff;
-    }
-
-    button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: background 0.2s ease-in-out;
-    }
-
-    button:hover {
-      background-color: #43a047;
-    }
-
     #result {
-      margin-top: 18px;
-      text-align: center;
-      font-weight: 500;
-      color: #222;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #0072CE;
     }
   </style>
 </head>
-
 <body>
-  <h2>Оставить вещи</h2>
-  <form id="wardrobeForm">
+  <h2>Форма приёма вещей</h2>
+  <form id="garderob-form">
     <input name="fio" placeholder="ФИО" required>
-    <input name="phone" placeholder="Телефон" required>
-    <input name="extraPhone" placeholder="Доп. номер">
-    <input name="contactName" placeholder="Имя контакта">
-    <input name="items" placeholder="Что оставлено">
-    <button type="submit">Отправить</button>
+    <input name="phone" placeholder="Сотовый телефон" pattern="[0-9]+" required>
+    <input name="contactPhone" placeholder="Доп. контактный номер" pattern="[0-9]+" required>
+    <input name="contactName" placeholder="Имя доп. контакта" required>
+    <textarea name="description" placeholder="Описание вещи" required></textarea>
+    <button type="submit">Сдать вещь</button>
   </form>
+
   <div id="result"></div>
 
   <script>
-    const form = document.getElementById('wardrobeForm');
-    const result = document.getElementById('result');
-
-    form.addEventListener('submit', async (e) => {
+    document.getElementById("garderob-form").addEventListener("submit", async function(e) {
       e.preventDefault();
-      const data = Object.fromEntries(new FormData(form).entries());
-      try {
-        const res = await fetch('https://script.google.com/macros/s/AKfycbz0tfDr4cZcmTWoe7IvWY90xo9JVfnnOFEikwrvWN93DUXOTYR_6hJ-qb2oYKlwEOY_tw/exec', {
-          method: 'POST',
-          body: JSON.stringify(data),
-          headers: { 'Content-Type': 'application/json' }
-        });
-        const json = await res.json();
-        result.textContent = "Ваш номер: " + json.number;
+      const form = e.target;
+      const data = {
+        fio: form.fio.value,
+        phone: form.phone.value,
+        contactPhone: form.contactPhone.value,
+        contactName: form.contactName.value,
+        description: form.description.value
+      };
+
+      const response = await fetch("https://script.google.com/macros/s/AKfycbz2H4V_j2DnNG9BliL2GObeSWf9CNwGeV-CC_XuaDHO1wnK1FqtZPTjgukPoM8kD5RFTA/exec", {
+        method: "POST",
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        document.getElementById("result").innerHTML =
+          `✅ Спасибо, ${data.fio}!<br><br>
+           🆔 Ваш номер: <strong>${result.number}</strong><br>
+           🕒 Время: ${result.time}<br><br>
+           Сделайте скриншот 📸`;
         form.reset();
-      } catch {
-        result.textContent = "Ошибка отправки. Попробуйте позже.";
+      } else {
+        document.getElementById("result").innerText = "❌ Ошибка при отправке.";
       }
     });
   </script>
 </body>
-
 </html>

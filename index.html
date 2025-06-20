@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Гардероб</title>
+</head>
+
+<body>
+  <h2>Запись в гардероб</h2>
+  <form id="wardrobeForm">
+    <input name="fio" placeholder="ФИО" required><br>
+    <input name="phone" placeholder="Телефон" required><br>
+    <input name="extraPhone" placeholder="Доп. номер"><br>
+    <input name="contactName" placeholder="Имя контакта"><br>
+    <input name="items" placeholder="Что оставлено в гардеробе"><br>
+    <button type="submit">Отправить</button>
+  </form>
+  <h3 id="result"></h3>
+
+  <script>
+    const form = document.getElementById('wardrobeForm');
+    const result = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      const res = await fetch('ВСТАВЬ_ТУТ_URL_ТВОЕГО_СКРИПТА', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const json = await res.json();
+      result.textContent = "Ваш номер: " + json.number;
+      form.reset();
+    });
+  </script>
+</body>
+
+</html>

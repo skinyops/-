@@ -50,6 +50,9 @@
 
       const response = await fetch("https://script.google.com/macros/s/AKfycbz2H4V_j2DnNG9BliL2GObeSWf9CNwGeV-CC_XuaDHO1wnK1FqtZPTjgukPoM8kD5RFTA/exec", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify(data)
       });
 
@@ -62,7 +65,7 @@
            Сделайте скриншот 📸`;
         form.reset();
       } else {
-        document.getElementById("result").innerText = "❌ Ошибка при отправке.";
+        document.getElementById("result").innerText = "❌ Ошибка при отправке: " + result.error;
       }
     });
   </script>

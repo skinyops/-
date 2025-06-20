@@ -1,22 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 
 <head>
   <meta charset="UTF-8">
   <title>Гардероб</title>
+  <style>
+    body {
+      background-color: #ffffff;
+      font-family: "Segoe UI", sans-serif;
+      max-width: 420px;
+      margin: 40px auto;
+      padding: 20px;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+
+    input,
+    button {
+      width: 100%;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      background-color: #f9f9f9;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #4CAF50;
+      background-color: #fff;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+    }
+
+    button:hover {
+      background-color: #43a047;
+    }
+
+    #result {
+      margin-top: 18px;
+      text-align: center;
+      font-weight: 500;
+      color: #222;
+    }
+  </style>
 </head>
 
 <body>
-  <h2>Запись в гардероб</h2>
+  <h2>Оставить вещи</h2>
   <form id="wardrobeForm">
-    <input name="fio" placeholder="ФИО" required><br>
-    <input name="phone" placeholder="Телефон" required><br>
-    <input name="extraPhone" placeholder="Доп. номер"><br>
-    <input name="contactName" placeholder="Имя контакта"><br>
-    <input name="items" placeholder="Что оставлено в гардеробе"><br>
+    <input name="fio" placeholder="ФИО" required>
+    <input name="phone" placeholder="Телефон" required>
+    <input name="extraPhone" placeholder="Доп. номер">
+    <input name="contactName" placeholder="Имя контакта">
+    <input name="items" placeholder="Что оставлено">
     <button type="submit">Отправить</button>
   </form>
-  <h3 id="result"></h3>
+  <div id="result"></div>
 
   <script>
     const form = document.getElementById('wardrobeForm');
@@ -25,14 +77,18 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const data = Object.fromEntries(new FormData(form).entries());
-      const res = await fetch('ВСТАВЬ_ТУТ_URL_ТВОЕГО_СКРИПТА', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' }
-      });
-      const json = await res.json();
-      result.textContent = "Ваш номер: " + json.number;
-      form.reset();
+      try {
+        const res = await fetch('https://script.google.com/macros/s/AKfycbz0tfDr4cZcmTWoe7IvWY90xo9JVfnnOFEikwrvWN93DUXOTYR_6hJ-qb2oYKlwEOY_tw/exec', {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const json = await res.json();
+        result.textContent = "Ваш номер: " + json.number;
+        form.reset();
+      } catch {
+        result.textContent = "Ошибка отправки. Попробуйте позже.";
+      }
     });
   </script>
 </body>
